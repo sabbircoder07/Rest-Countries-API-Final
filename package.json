@@ -1,0 +1,25 @@
+{
+  "name": "rest-countries-api",
+  "version": "1.0.0",
+  "silenceDeprecations": [
+    "mixed-decls"
+  ],
+  "default": "index.html",
+  "source": [
+    "src/index.html, src/countryDetails.html"
+  ],
+  "scripts": {
+    "start": "parcel src/*.html ",
+    "build": "parcel build src/*.html --dist-dir public "
+  },
+  "author": "Sabbir Ahmed",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.13.2",
+    "parcel": "^2.13.2"
+  },
+  "dependencies": {
+    "sass": "^1.82.0"
+  }
+}
