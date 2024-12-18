@@ -64,73 +64,24 @@ export const loadCurrentMode = function (currentMode) {
  */
 export const getAllCountries = async function () {
   try {
-    const countriesData = await getJSON(`${API_URL}all`);
+    const countriesData = await getJSON(
+      `${API_URL}all?fields=name,flags,population,region,subregion,capital,topLevelDomain,currencies,languages,borders`
+    );
     state.countyList.results = countriesData.sort((countryA, countryB) =>
       countryA.name.common.localeCompare(countryB.name.common)
     );
-  } catch (error) {
-    throw error;
-  }
-};
 
-/**
- * Retrieves all countries from the Rest Countries API, extracts their common names,
- * removes duplicates, and updates the application state with the list of unique country names.
- * The list of country names is used to populate the autocomplete input field.
- * @async
- * @function
- * @returns {Promise<void>}
- * @description
- * Makes a GET request to the Rest Countries API and retrieves a list of
- * all countries. The list is then processed to extract the common name of
- * each country, and the results are stored in the application state. The
- * list of country names is used to populate the autocomplete input field.
- */
-export const fetchCountryNames = async function () {
-  try {
-    // Make a GET request to the Rest Countries API to retrieve a list of all countries
-    const allCountries = await getJSON(`${API_URL}all`);
+    const regions = countriesData.map((country) => country.region);
+    // Remove duplicates from the list of regions and store the result in the application state
+    state.regions = [...new Set(regions)];
 
     // Extract the common name of each country from the list of countries
-    const countryNames = allCountries.map((country) => country.name.common);
+    const countryNames = countriesData.map((country) => country.name.common);
 
     // Remove duplicates from the list of country names
     state.countriesName = [...new Set(countryNames)];
   } catch (error) {
-    // Handle any errors that occur during the execution of the function
     throw error;
-  }
-};
-/******  93714125-661a-43ef-908d-0bf8d66b61e7  *******/
-
-/**
- * Retrieves a list of all regions from the Rest Countries API and updates the application state with it.
- * The list of regions is used to populate the select input field.
- * @async
- * @function
- * @returns {Promise<void>}
- * @description
- * Makes a GET request to the Rest Countries API and retrieves a list of all countries.
- * The list of countries is processed to extract the regions from each country, and the results are stored
- * in the application state. The list of regions is used to populate the select input field.
- *
- * @example
- * import { getAllRegions } from "./model.js";
- * getAllRegions();
- */
-export const getAllRegions = async function () {
-  try {
-    // Make a GET request to the Rest Countries API to retrieve a list of all countries
-    const countries = await getJSON(`${API_URL}all`);
-
-    // Extract the region from each country in the list of countries
-    const regions = countries.map((country) => country.region);
-
-    // Remove duplicates from the list of regions and store the result in the application state
-    state.regions = [...new Set(regions)];
-  } catch (err) {
-    // Handle any errors that occur during the execution of the function
-    throw err;
   }
 };
 
@@ -241,7 +192,9 @@ export const loadCountryDetails = async function (countryName) {
 
     // If the country has borders, fetch all countries and filter by borders
     if (countryData[0].borders) {
-      const allCountriesData = await getJSON(`${API_URL}all`);
+      const allCountriesData = await getJSON(
+        `${API_URL}all?fields=cca3,name,flags,population,region,subregion,capital,topLevelDomain,currencies,languages,borders`
+      );
       state.countryDetails.borders = allCountriesData
         .filter((country) => countryData[0].borders.includes(country.cca3))
         .map((country) => country.name.common);

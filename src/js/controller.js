@@ -29,49 +29,24 @@ const controlAllCountryInformation = async function () {
     // Fetch all countries from the API and store them in the application state
     await model.getAllCountries();
 
-    // Delay the rendering to simulate loading time, then render the countries and pagination
-    setTimeout(function () {
-      // Retrieve a slice of countries for the current page
-      const data = model.getCountriesByPage();
+    // Retrieve the list of regions from the application state
+    const regionsData = model.state.regions;
 
-      // Render the list of countries on the page
-      countriesView.render(data);
+    // Render the list of regions on the page
+    regionsView.render(regionsData);
 
-      // Render the pagination controls
-      paginationView.render(model.state.countyList);
-    }, config.SHOW_COUNTRIES_SEC * 1000);
-  } catch (err) {
-    // Handle any errors that occur during the execution of the function
-    view.renderError(err);
-  }
-};
+    // Retrieve the fetched country names from the application state
+    const countriesNameData = model.state.countriesName;
+    // Render the autocomplete view with the retrieved data
+    autocompleteView.render(countriesNameData);
 
-/**
- * Fetches the list of regions from the Rest Countries API and renders them onto the page.
- * @async
- * @function
- * @returns {Promise<void>}
- * @description
- * This function retrieves all regions from the API and displays them on the page.
- * A loading spinner is shown while the data is being fetched. In case of an error,
- * an error message is displayed to the user.
- */
-const controlRegionList = async function () {
-  try {
-    // Display a loading spinner while fetching data
-    view.renderSpinner();
+    const data = model.getCountriesByPage();
 
-    // Fetch all regions from the API and store them in the application state
-    await model.getAllRegions();
+    // Render the list of countries on the page
+    countriesView.render(data);
 
-    // Delay the rendering to simulate loading time, then render the regions
-    setTimeout(function () {
-      // Retrieve the list of regions from the application state
-      const data = model.state.regions;
-
-      // Render the list of regions on the page
-      regionsView.render(data);
-    }, config.SHOW_COUNTRIES_SEC * 1000);
+    // Render the pagination controls
+    paginationView.render(model.state.countyList);
   } catch (err) {
     // Handle any errors that occur during the execution of the function
     view.renderError(err);
@@ -312,40 +287,6 @@ const controlPagination = function (goToPage) {
 };
 
 /**
- * Handles the country name autocomplete UI by fetching the list of countries
- * names from the model and rendering it on the page. If an error occurs during
- * the execution of the function, an error message is displayed to the user.
- * @function
- * @description
- * This function retrieves the list of countries names from the model and
- * renders it on the page. In case of an error, an error message is displayed
- * to the user.
- *
- * @example
- * controlAutoCompleteCountryName();
- */
-const controlAutoCompleteCountryName = async function () {
-  try {
-    // Fetch the list of country names from the model
-    await model.fetchCountryNames();
-
-    // Retrieve the fetched country names from the application state
-    const data = model.state.countriesName;
-
-    // Render the autocomplete view with the retrieved data
-    autocompleteView.render(data);
-  } catch (err) {
-    // Log any errors to the console for debugging
-    console.log(err);
-
-    // Display an error message to the user
-    view.renderError(err);
-  } finally {
-    // Clean up resources or perform additional tasks if necessary
-  }
-};
-
-/**
  * Initializes event handlers for various UI components in the application.
  * This function sets up event handlers for UI components such as the mode
  * switcher, region list, country list, search input, and pagination controls.
@@ -368,9 +309,6 @@ const init = function () {
   modeSwitcherView.addHandlerLoad(controlModeSwitcherPageLoad);
   modeSwitcherView.addHandlerClick(controlModeSwitcher);
 
-  // Add event handler for region list
-  regionsView.addHandlerRender(controlRegionList);
-
   // Add event handler for country list
   countriesView.addHandlerRender(controlAllCountryInformation);
 
@@ -380,9 +318,6 @@ const init = function () {
 
   // Add event handler for pagination controls
   paginationView.addHandlerClick(controlPagination);
-
-  // Trigger autocomplete for country names
-  controlAutoCompleteCountryName();
 };
 
 init();
