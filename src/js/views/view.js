@@ -23,14 +23,14 @@ export class View {
     <div class="message msg-danger">
       <div class="message-icon">
         <i class="ion-close-round">
-          <img src="images/error_icon.svg" alt="error" />
+          <img src="/src/images/error_icon.svg" alt="error" />
         </i>
       </div>
       <div class="message-content">
         <p>${message}</p>
       </div>
       <a href="_" class="message-close">
-        <img class="close-icon" src="images/cross-icon.svg" alt="close" />
+        <img class="close-icon" src="/src/images/cross-icon.svg" alt="close" />
       </a>
     </div>
   `;
